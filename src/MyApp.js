@@ -6,6 +6,13 @@ import axios from 'axios';
 
 function MyApp() 
 {
+    useEffect(() => {
+        fetchAll().then( result => {
+           if (result)
+              setCharacters(result);
+         });
+     }, [] );
+
     const [characters, setCharacters] = useState([]);
 
     function removeOneCharacter(index)
@@ -16,6 +23,8 @@ function MyApp()
         });
         setCharacters(updated);
     }
+
+
     return ( 
         <div className = "container"> 
            <Table characterData = {characters} removeCharacter = {removeOneCharacter} /> 
@@ -23,10 +32,6 @@ function MyApp()
         </div> 
       );
 
-    function updateList(person)
-    {
-        setCharacters([...characters,person])
-    }
 
     async function fetchAll(){
         try {
@@ -40,13 +45,39 @@ function MyApp()
         }
      }
 
-     useEffect(() => {
-        fetchAll().then( result => {
-           if (result)
-              setCharacters(result);
-         });
-     }, [] );
+     async function makeDeleteCall(person){
+        try {
+           const response = await axios.delete('http://localhost:5000/users/' + person.id, person);
+           return response;
+        }
+        catch (error) {
+           console.log(error);
+           return false;
+        }
+     }
+    
+
+    async function makePostCall(person){
+        try {
+           const response = await axios.post('http://localhost:5000/users', person);
+           return response;
+        }
+        catch (error) {
+           console.log(error);
+           return false;
+        }
+     } 
+
+     function updateList(person) { 
+        makePostCall(person).then( result => {
+        if (result && result.status === 201)
+           setCharacters([...characters, person] );
+        });
+     }
+
+
 }
+
 
 
 
