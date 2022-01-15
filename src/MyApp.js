@@ -17,11 +17,21 @@ function MyApp()
 
     function removeOneCharacter(index)
     {
-        const updated = characters.filter((character,i) =>
-        {
-            return i !== index
+        // console.log(characters[index]);
+        // const updated = characters.filter((character,i) =>
+        // {
+        //     return i !== index
+        // });
+        // setCharacters(updated);
+
+        makeDeleteCall(characters[index]).then( result => {
+            if (result && result.status === 204){
+            const updated = characters.filter((character,i) =>
+            {
+                return i !== index
+            });
+            setCharacters(updated);}
         });
-        setCharacters(updated);
     }
 
 
